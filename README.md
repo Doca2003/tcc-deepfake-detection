@@ -77,8 +77,8 @@ python src/test_dataset.py     # valida o carregamento dos dados
 - [x] Detecção e recorte de rostos
 - [x] Aplicação do ELA
 - [x] Carregamento dos dados e split por vídeo
-- [ ] Modelos (ResNet e CNN própria)
-- [ ] Treinamento e métricas
+- [x] Modelos (ResNet e CNN própria)
+- [x] Treinamento e métricas
 - [ ] Grad-CAM e análise qualitativa
 
 ## Dados
