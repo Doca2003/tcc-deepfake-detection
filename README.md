@@ -52,6 +52,10 @@ src/
 python -m venv venv
 venv\Scripts\activate          # Windows
 pip install -r requirements.txt
+pip install facenet-pytorch --no-deps
+python src/run_train.py --config A --epochs 1
+python src/run_train.py --config B --epochs 1
+python src/run_train.py --config B --epochs 1
 ```
 
 Coloque vídeos em `data/samples/videos/real/` e `data/samples/videos/fake/` e,
@@ -77,8 +81,8 @@ python src/test_dataset.py     # valida o carregamento dos dados
 - [x] Detecção e recorte de rostos
 - [x] Aplicação do ELA
 - [x] Carregamento dos dados e split por vídeo
-- [ ] Modelos (ResNet e CNN própria)
-- [ ] Treinamento e métricas
+- [x] Modelos (ResNet e CNN própria)
+- [x] Treinamento e métricas
 - [ ] Grad-CAM e análise qualitativa
 
 ## Dados
