@@ -7,8 +7,9 @@ def build_custom_cnn(input_shape=(224,224,3)):
     x = layers.Rescaling(1.0 / 255)(inputs)
 
     for filters in [32, 64, 128]:
-        x=layers.Conv2D(filters, 3, padding="same", activation="relu")(x)
-        x = layers.MaxPool2D()(x)
+        x = layers.Conv2D(filters, 3, padding="same", activation="relu")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.MaxPooling2D()(x)
 
         x = layers.GlobalAveragePooling2D()(x)
         x = layers.Dense(64, activation="relu")(x)
