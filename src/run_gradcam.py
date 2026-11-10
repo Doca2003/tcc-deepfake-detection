@@ -2,7 +2,7 @@ import argparse
 import os
 
 from evaluation.gradcam import load_trained_model, save_comparison
-from utils.dataset import split_by_video
+from utils.dataset import list_split_files
 
 #usa o mesmo split por video do treino, pega só imagens do conjunto de teste
 
@@ -17,7 +17,7 @@ args = parser.parse_args()
 folder = "faces" if args.config == "A" else "ela"
 data_dir = os.path.join(args.data_root, folder)
 
-paths, labels = split_by_video(data_dir, seed=args.seed)["test"]
+paths, labels = list_split_files(data_dir, seed=args.seed)["test"]
 model = load_trained_model(args.config)
 
 out_dir = os.path.join("outputs", "gradcam_results", f"config_{args.config}")
