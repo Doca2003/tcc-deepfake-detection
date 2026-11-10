@@ -8,9 +8,9 @@ from models.cnn_custom import build_custom_cnn
 from evaluation.metrics import evaluate_model
 
 CONFIGS = {
-    "A":{"folder": "faces","builder": build_resnet},
-    "B":{"folder": "ela", "builder": build_resnet},
-    "C":{"folder":"ela","builder":build_custom_cnn},
+    "A": {"folder": "faces", "builder": build_resnet, "lr": 1e-4},
+    "B": {"folder": "ela", "builder": build_resnet, "lr": 1e-4},
+    "C": {"folder": "ela", "builder": build_custom_cnn, "lr": 1e-3},
 }
 
 def train_model(config, data_root="data/samples", epochs=5, batch_size=16,seed=42, output_dir="outputs"):
@@ -21,7 +21,7 @@ def train_model(config, data_root="data/samples", epochs=5, batch_size=16,seed=4
     train_ds, val_ds, test_ds = get_datasets(data_dir, batch_size=batch_size, seed=seed)
 
     model = cfg["builder"]()
-    model.compile(optimizer=tf.keras.optimizers.Adam(1e-4), loss="binary_crossentropy", metrics=["accuracy"])
+    model.compile(optimizer=tf.keras.optimizers.Adam(cfg["lr"]), loss="binary_crossentropy", metrics=["accuracy"])
     model.fit(train_ds, validation_data=val_ds, epochs=epochs)
 
     results = evaluate_model(model, test_ds)
