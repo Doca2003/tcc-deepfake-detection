@@ -47,8 +47,26 @@ def build_dataset(paths, labels, batch_size, shuffle, seed):
     ds = ds.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
     return ds.batch(batch_size).prefetch(tf.data.AUTOTUNE)
 
+def list_split_files(data_dir, seed=42):
+    if not os.path.isdir(os.path.join(data_dir, "train")):
+        return split_by_video(data_dir, seed=seed)
+
+    splits = {}
+    for split in ["train", "val", "test"]:
+        paths, labels = [], []
+        for label_name, label in LABELS.items():
+            class_dir = os.path.join(data_dir, split, label_name)
+            for video in sorted(os.listdir(class_dir)):
+                video_dir = os.path.join(class_dir, video)
+                for frame_file in sorted(os.listdir(video_dir)):
+                    paths.append(os.path.join(video_dir, frame_file))
+                    labels.append(float(label))
+        splits[split] = (paths, labels)
+    return splits
+
+
 def get_datasets(data_dir, batch_size=16, seed=42):
-    splits=split_by_video(data_dir, seed=seed)
+    splits = list_split_files(data_dir, seed=seed)
     datasets=[]
     for name in ["train", "val", "test"]:
         paths, labels = splits[name]
