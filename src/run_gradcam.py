@@ -4,21 +4,20 @@ import os
 from evaluation.gradcam import load_trained_model, save_comparison
 from utils.dataset import list_split_files
 
-#usa o mesmo split por video do treino, pega só imagens do conjunto de teste
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--config", choices=["A", "B", "C"], required=True)
 parser.add_argument("--n_per_class", type=int, default=3)
 parser.add_argument("--per_video", type=int, default=1)
 parser.add_argument("--data_root", default="data/samples")
 parser.add_argument("--seed", type=int, default=42)
+parser.add_argument("--ckpt_dir", default="outputs/checkpoints")
 args = parser.parse_args()
 
 folder = "faces" if args.config == "A" else "ela"
 data_dir = os.path.join(args.data_root, folder)
 
 paths, labels = list_split_files(data_dir, seed=args.seed)["test"]
-model = load_trained_model(args.config)
+model = load_trained_model(args.config, ckpt_dir=args.ckpt_dir)
 
 out_dir = os.path.join("outputs", "gradcam_results", f"config_{args.config}")
 class_count = {0.0: 0, 1.0: 0}
