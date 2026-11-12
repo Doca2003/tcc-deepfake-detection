@@ -4,6 +4,12 @@ import os
 from evaluation.gradcam import load_trained_model, save_comparison
 from utils.dataset import list_split_files
 
+TAGS = {
+    "A": "Config A: ResNet + rostos (sem ELA)",
+    "B": "Config B: ResNet + ELA",
+    "C": "Config C: CNN própria + ELA",
+}
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--config", choices=["A", "B", "C"], required=True)
 parser.add_argument("--n_per_class", type=int, default=3)
@@ -32,7 +38,7 @@ for path, label in zip(paths, labels):
     if video_count.get(video, 0) >= args.per_video:
         continue
 
-    out_name = os.path.splitext(rel.replace(os.sep, "_"))[0] + ".png"
+    out_name = f"config{args.config}_" + os.path.splitext(rel.replace(os.sep, "_"))[0] + ".png"
     save_comparison(
         model,
         face_path=os.path.join(args.data_root, "faces", rel),
@@ -40,6 +46,7 @@ for path, label in zip(paths, labels):
         input_path=path,
         out_path=os.path.join(out_dir, out_name),
         true_label=label,
+        tag=TAGS[args.config],
     )
     class_count[label] += 1
     video_count[video] = video_count.get(video, 0) + 1

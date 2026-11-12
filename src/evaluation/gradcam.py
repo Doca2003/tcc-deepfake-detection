@@ -61,13 +61,13 @@ def overlay_heatmap(base_rgb, heatmap, alpha=0.4):
     return cv2.addWeighted(base_rgb, 1 - alpha, colored, alpha, 0)
 
 
-def save_comparison(model, face_path, ela_path, input_path, out_path, true_label):
+def save_comparison(model, face_path, ela_path, input_path, out_path, true_label, tag=""):
     img, _ = load_image(input_path, 0.0)
     heatmap, prob = make_gradcam_heatmap(model, tf.expand_dims(img, 0))
 
     face = np.array(Image.open(face_path).convert("RGB").resize(IMG_SIZE))
     ela = np.array(Image.open(ela_path).convert("RGB").resize(IMG_SIZE))
-    overlay = overlay_heatmap(img.numpy().astype("uint8"), heatmap)
+    overlay = overlay_heatmap(face, heatmap)
 
     fig, axes = plt.subplots(1, 3, figsize=(10, 3.8))
     panels = [(face, "Rosto original"), (ela, "Mapa ELA"), (overlay, "Grad-CAM")]
@@ -77,9 +77,10 @@ def save_comparison(model, face_path, ela_path, input_path, out_path, true_label
         ax.axis("off")
 
     real_or_fake = "fake" if true_label == 1 else "real"
-    fig.suptitle(f"Verdadeiro: {real_or_fake} | P(fake) = {prob:.2f}")
+    predicted = "fake" if prob >= 0.5 else "real"
+    fig.suptitle(f"{tag}\nVerdadeiro: {real_or_fake} | Predito: {predicted} | P(fake) = {prob:.2f}")
     fig.tight_layout()
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    fig.savefig(out_path, dpi=150)
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
